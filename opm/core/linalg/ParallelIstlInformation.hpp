@@ -120,6 +120,20 @@ public:
         indexSet.endResize();
         remoteIndices.rebuild<false>();
     }
+    /// \brief Compute scalar product.
+    /// \param v The vector to compute the scalarproduct from
+    /// \tparam T The type of the vector. It needs to provide a size method
+    ///           and a forward iterator.
+    template<class T>
+    double scalarproduct(const T& v)
+    {
+        updateOwnerMask(v);
+        double result=0;
+        for(auto it=v.begin(), endit=v.end() ; it != endit; ++it ) {
+            result += ownerMask_[it-v.begin()] * ( *it * *it );
+        }
+        return result;
+    }
     /// \brief Communcate the dofs owned by us to the other process.
     ///
     /// Afterwards all associated dofs will contain the same data.

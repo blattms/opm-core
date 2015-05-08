@@ -81,5 +81,6 @@ BOOST_AUTO_TEST_CASE(singleContainerReductionTest)
     int oldvalue = value;
     comm.computeReduction(x,Opm::Reduction::makeGlobalSumFunctor<int>(),value);
     BOOST_CHECK(value==oldvalue+((N-1)*N)/2);
+    BOOST_CHECK( (N-1)*N*(2*N-1)/6 == comm.scalarproduct(x));
 }
 #endif

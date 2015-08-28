@@ -153,7 +153,6 @@ namespace Opm
         // Disable copying and assignment.
         WellsManager(const WellsManager& other);
         WellsManager& operator=(const WellsManager& other);
-        static void setupCompressedToCartesian(const int* global_cell, int number_of_cells, std::map<int,int>& cartesian_to_compressed );
         void setupWellControls(std::vector<WellConstPtr>& wells, size_t timeStep,
                                std::vector<std::string>& well_names, const PhaseUsage& phaseUsage,
                                const std::vector<int>& wells_on_proc);
@@ -184,6 +183,8 @@ namespace Opm
         bool is_parallel_run_;
     };
 
+    /// \brief Creates a table to lookup the compressed global index from the ijk triple.
+    void setupCompressedToCartesian(const int* global_cell, int number_of_cells, std::map<int,int>& cartesian_to_compressed );
 } // namespace Opm
 
 #include "WellsManager_impl.hpp"

@@ -391,8 +391,8 @@ namespace Opm
         well_collection_.applyExplicitReinjectionControls(well_reservoirrates_phase, well_surfacerates_phase);
     }
 
-    void WellsManager::setupCompressedToCartesian(const int* global_cell, int number_of_cells,
-                                                  std::map<int,int>& cartesian_to_compressed ) {
+    void setupCompressedToCartesian(const int* global_cell, int number_of_cells,
+                                    std::map<int,int>& cartesian_to_compressed ) {
         // global_cell is a map from compressed cells to Cartesian grid cells.
         // We must make the inverse lookup.
 

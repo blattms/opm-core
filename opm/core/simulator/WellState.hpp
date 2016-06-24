@@ -56,11 +56,11 @@ namespace Opm
 
             if (wells) {
                 const int nw = wells->number_of_wells;
-                const int np = wells->number_of_phases;
+                numPhases_ = wells->number_of_phases;
                 bhp_.resize(nw);
                 thp_.resize(nw);
                 temperature_.resize(nw, 273.15 + 20); // standard temperature for now
-                wellrates_.resize(nw * np, 0.0);
+                wellrates_.resize(nw * numPhases_, 0.0);
                 for (int w = 0; w < nw; ++w) {
                     assert((wells->type[w] == INJECTOR) || (wells->type[w] == PRODUCER));
                     const WellControls* ctrl = wells->ctrls[w];
@@ -81,8 +81,8 @@ namespace Opm
                     if (well_controls_well_is_stopped(ctrl)) {
                         // Stopped well:
                         // 1. Rates: assign zero well rates.
-                        for (int p = 0; p < np; ++p) {
-                            wellrates_[np*w + p] = 0.0;
+                        for (int p = 0; p < numPhases_; ++p) {
+                            wellrates_[numPhases_*w + p] = 0.0;
                         }
                         // 2. Bhp: assign bhp equal to bhp control, if
                         //    applicable, otherwise assign equal to
@@ -111,14 +111,14 @@ namespace Opm
                         if (well_controls_get_current_type(ctrl) == SURFACE_RATE) {
                             const double rate_target = well_controls_get_current_target(ctrl);
                             const double * distr = well_controls_get_current_distr( ctrl );
-                            for (int p = 0; p < np; ++p) {
-                                wellrates_[np*w + p] = rate_target * distr[p];
+                            for (int p = 0; p < numPhases_; ++p) {
+                                wellrates_[numPhases_*w + p] = rate_target * distr[p];
                             }
                         } else {
                             const double small_rate = 1e-14;
                             const double sign = (wells->type[w] == INJECTOR) ? 1.0 : -1.0;
-                            for (int p = 0; p < np; ++p) {
-                                wellrates_[np*w + p] = small_rate * sign;
+                            for (int p = 0; p < numPhases_; ++p) {
+                                wellrates_[numPhases_*w + p] = small_rate * sign;
                             }
                         }
 
@@ -209,7 +209,7 @@ namespace Opm
         /// The number of phases present.
         int numPhases() const
         {
-            return wellRates().size() / numWells();
+            return numPhases_;
         }
 
         virtual data::Wells report() const
@@ -232,6 +232,7 @@ namespace Opm
             wellrates_( rhs.wellrates_ ),
             perfrates_( rhs.perfrates_ ),
             perfpress_( rhs.perfpress_ ),
+	    numPhases_( rhs.numPhases_ ),
             wellMap_( rhs.wellMap_ ),
             wells_( clone_wells( rhs.wells_.get() ) )
         {}
@@ -256,6 +257,7 @@ namespace Opm
         std::vector<double> wellrates_;
         std::vector<double> perfrates_;
         std::vector<double> perfpress_;
+        int numPhases_;
 
         WellMapType wellMap_;
 

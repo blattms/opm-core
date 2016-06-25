@@ -244,6 +244,7 @@ namespace Opm
             this->wellrates_ = rhs.wellrates_;
             this->perfrates_ = rhs.perfrates_;
             this->perfpress_ = rhs.perfpress_;
+            this->numPhases_ = rhs.numPhases_;
             this->wellMap_ = rhs.wellMap_;
             this->wells_.reset( clone_wells( rhs.wells_.get() ) );
 

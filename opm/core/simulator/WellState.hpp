@@ -207,9 +207,17 @@ namespace Opm
         }
 
         /// The number of phases present.
+        /// \return the number of phases present or -1 if there are no wells
         int numPhases() const
         {
-            return wellRates().size() / numWells();
+            if( numWells() )
+            {
+                return wellRates().size() / numWells();
+            }
+            else
+            {
+                return -1;
+            }
         }
 
         virtual data::Wells report() const
